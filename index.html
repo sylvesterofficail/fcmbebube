@@ -8,8 +8,214 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="style.css"/>
+
+<style>
+/* ── NEWSLETTER POPUP ─────────────────────────────────────── */
+.nl-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+.nl-popup-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.nl-popup {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  width: 92%;
+  max-width: 520px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+  transform: translateY(24px) scale(.97);
+  transition: transform .35s ease;
+  position: relative;
+}
+.nl-popup-overlay.open .nl-popup {
+  transform: translateY(0) scale(1);
+}
+.nl-popup-top {
+  background: linear-gradient(135deg, #2B1050 0%, #4A1A8A 100%);
+  padding: 36px 36px 28px;
+  color: #fff;
+  position: relative;
+}
+.nl-popup-top .eyebrow {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #F5A623;
+  margin-bottom: 10px;
+}
+.nl-popup-top h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 10px;
+}
+.nl-popup-top p {
+  font-size: .9rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,.72);
+  margin: 0;
+}
+.nl-popup-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255,255,255,.12);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.nl-popup-close:hover { background: rgba(255,255,255,.24); }
+.nl-popup-body {
+  padding: 28px 36px 32px;
+}
+.nl-popup-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.nl-popup-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.nl-popup-field label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: #555;
+  letter-spacing: .03em;
+}
+.nl-popup-field input {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 13px;
+  font-size: .9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.nl-popup-field input:focus { border-color: #4A1A8A; }
+.nl-popup-submit {
+  width: 100%;
+  margin-top: 6px;
+  padding: 13px;
+  background: #2B1050;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: .95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: .03em;
+  transition: background .2s, transform .15s;
+}
+.nl-popup-submit:hover { background: #4A1A8A; transform: translateY(-1px); }
+.nl-popup-note {
+  text-align: center;
+  font-size: .72rem;
+  color: #999;
+  margin-top: 10px;
+}
+.nl-popup-note a { color: #4A1A8A; }
+.nl-popup-success {
+  display: none;
+  text-align: center;
+  padding: 36px 36px 40px;
+}
+.nl-popup-success-icon {
+  width: 64px;
+  height: 64px;
+  background: #F0FDF4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  color: #16A34A;
+}
+.nl-popup-success h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  margin: 0 0 10px;
+  color: #1a1a2e;
+}
+.nl-popup-success p { color: #666; font-size: .9rem; line-height: 1.6; margin: 0; }
+.nl-popup-dismiss {
+  margin-top: 5px;
+  font-size: .75rem;
+  color: #aaa;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.nl-popup-dismiss:hover { color: #666; }
+
+/* ── CAVEAT MODAL (auto-open fix) ─────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9998;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open {
+  display: flex;
+}
+
+/* ── HAMBURGER ACTIVE STATE ───────────────────────────────── */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+.hamburger span {
+  display: block;
+  transition: transform .25s ease, opacity .2s ease;
+}
+
+/* ── MOBILE NAV OPEN STATE ────────────────────────────────── */
+.mobile-nav {
+  transform: translateX(100%);
+  transition: transform .3s ease;
+}
+.mobile-nav.open {
+  transform: translateX(0);
+}
+
+/* body scroll lock */
+body.nav-open { overflow: hidden; }
+</style>
 </head>
 <body>
 
@@ -67,12 +273,7 @@
       <div class="navbar-inner">
         <!-- Logo -->
         <a href="./" class="navbar-logo" aria-label="FCMB Pensions Home">
-          <!-- <div class="logo-icon"><span>FP</span></div>
-          <div class="logo-text">
-            <span class="brand">FCMB Pensions</span>
-            <span class="sub">Licensed by PenCom</span>
-          </div> -->
-          <div class="logo-icon"><img src="FCMBPensionsLogo.png" alt=""></div>
+          <div class="logo-icon"><img src="FCMBPensionsLogo.png" alt="FCMB Pensions"></div>
         </a>
 
         <!-- Nav Menu -->
@@ -166,7 +367,7 @@
         </div>
 
         <!-- Hamburger -->
-        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -175,7 +376,7 @@
 </div>
 
 <!-- MOBILE NAV -->
-<div class="mobile-nav" id="mobileNav">
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
   <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
   <a href="about-us">About Us</a>
   <a href="retirement-savings-account">Retirement Savings Account</a>
@@ -578,39 +779,7 @@
       <!-- Phone mockup -->
       <div class="reveal reveal-delay-3">
         <div class="phone-mockup">
-          <img src="fcmbappimage.png" alt="">
-          <!-- <div class="phone-frame">
-            <div class="phone-screen">
-              <div class="phone-notch"></div>
-              <div class="phone-header">
-                <div>
-                  <div class="phone-greeting">Good morning,</div>
-                  <div class="phone-name">Adaeze 👋</div>
-                </div>
-                <div style="width:32px;height:32px;background:rgba(255,255,255,0.1);border-radius:50%;"></div>
-              </div>
-              <div class="phone-balance-card">
-                <div class="phone-balance-label">Total RSA Balance</div>
-                <div class="phone-balance-value">₦4,823,640</div>
-                <div class="phone-balance-sub">↑ +₦47,200 this month</div>
-              </div>
-              <div class="phone-actions">
-                <div class="phone-action"><div class="phone-action-icon">💸</div><div class="phone-action-label">Transfer</div></div>
-                <div class="phone-action"><div class="phone-action-icon">📊</div><div class="phone-action-label">Statement</div></div>
-                <div class="phone-action"><div class="phone-action-icon">⚙️</div><div class="phone-action-label">Update</div></div>
-              </div>
-              <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;margin-bottom:6px;">Portfolio Growth</div>
-              <div class="phone-chart">
-                <div class="phone-chart-bar" style="height:35%;"></div>
-                <div class="phone-chart-bar" style="height:50%;"></div>
-                <div class="phone-chart-bar" style="height:42%;"></div>
-                <div class="phone-chart-bar" style="height:65%;"></div>
-                <div class="phone-chart-bar" style="height:58%;"></div>
-                <div class="phone-chart-bar active" style="height:80%;"></div>
-                <div class="phone-chart-bar active" style="height:90%;"></div>
-              </div>
-            </div>
-          </div> -->
+          <img src="fcmbappimage.png" alt="FCMB Pensions Mobile App">
         </div>
       </div>
     </div>
@@ -695,7 +864,7 @@
   </div>
 </section>
 
-<!-- NEWSLETTER -->
+<!-- NEWSLETTER SECTION -->
 <section class="newsletter-section" aria-label="Newsletter Signup">
   <div class="container">
     <div class="newsletter-inner">
@@ -802,28 +971,16 @@
       </div>
       <div class="awards-badges">
         <div class="award-badge-card reveal reveal-delay-1">
-          <!-- <div class="award-year">2022</div>
-          <div class="award-label">NDPR Trust Mark</div>
-          <div class="award-tag">✓ Certified</div> -->
-        ="ndpr-audit1.jpg" alt="">
+          <img src="ndpr-audit1.jpg" alt="NDPR Audit Certification 1">
         </div>
         <div class="award-badge-card reveal reveal-delay-2">
-          <!-- <div class="award-year">2023</div>
-          <div class="award-label">NDPR Audit</div>
-          <div class="award-tag">✓ Certified</div> -->
-          <img src="ndpr-audit2.jpg" alt="">
+          <img src="ndpr-audit2.jpg" alt="NDPR Audit Certification 2">
         </div>
         <div class="award-badge-card reveal reveal-delay-3">
-          <!-- <div class="award-year">2024</div>
-          <div class="award-label">NDPR Audit</div>
-          <div class="award-tag">✓ Certified</div> -->
-          <img src="ndpr-audit3.jpg" alt="">
+          <img src="ndpr-audit3.jpg" alt="NDPR Audit Certification 3">
         </div>
         <div class="award-badge-card reveal reveal-delay-4">
-          <!-- <div class="award-year">2025</div>
-          <div class="award-label">NDPR Audit</div>
-          <div class="award-tag">✓ Certified</div> -->
-          <img src="ndpr-audit4.jpg" alt="">
+          <img src="ndpr-audit4.jpg" alt="NDPR Audit Certification 4">
         </div>
       </div>
     </div>
@@ -932,12 +1089,7 @@
       <div>
         <div class="footer-brand">
           <a href="./" class="navbar-logo" style="margin-bottom: 16px; display: inline-flex;">
-            <!-- <div class="logo-icon"><span>FP</span></div>
-            <div class="logo-text">
-              <span class="brand" style="color: var(--white);">FCMB Pensions</span>
-              <span class="sub">The Smart Choice</span>
-            </div> -->
-            <div class="logo-icon"><img src="FCMBPensionsLogo.png" alt=""></div>
+            <div class="logo-icon"><img src="FCMBPensionsLogo.png" alt="FCMB Pensions"></div>
           </a>
         </div>
         <p class="footer-tagline">
@@ -982,7 +1134,7 @@
         </div>
       </div>
 
-      <!-- Learn More -->
+      <!-- Company -->
       <div>
         <div class="footer-col-title">Company</div>
         <div class="footer-links">
@@ -1040,7 +1192,7 @@
   </div>
 </div>
 
-<!-- CAVEAT MODAL -->
+<!-- CAVEAT / NOTICE MODAL (auto-shows on load) -->
 <div class="modal-overlay" id="caveatModal" role="dialog" aria-modal="true" aria-label="Important Notice">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
@@ -1055,6 +1207,303 @@
     </div>
   </div>
 </div>
-</body>
+
+<!-- NEWSLETTER POPUP (shows after 8 seconds) -->
+<div class="nl-popup-overlay" id="nlPopupOverlay" role="dialog" aria-modal="true" aria-label="Newsletter Signup">
+  <div class="nl-popup">
+    <div class="nl-popup-top">
+      <button class="nl-popup-close" id="nlPopupClose" aria-label="Close newsletter popup">✕</button>
+      <div class="eyebrow">Stay Informed</div>
+      <h3>Get pension updates<br>straight to your inbox.</h3>
+      <p>Fund performance, PenCom news, and retirement tips — delivered monthly, for free.</p>
+    </div>
+    <div class="nl-popup-body" id="nlPopupFormWrap">
+      <div class="nl-popup-row">
+        <div class="nl-popup-field">
+          <label for="nlp_firstname">First Name</label>
+          <input type="text" id="nlp_firstname" placeholder="e.g. Amara" autocomplete="given-name">
+        </div>
+        <div class="nl-popup-field">
+          <label for="nlp_lastname">Last Name</label>
+          <input type="text" id="nlp_lastname" placeholder="e.g. Okonkwo" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="nl-popup-row">
+        <div class="nl-popup-field">
+          <label for="nlp_email">Email Address</label>
+          <input type="email" id="nlp_email" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+      <button class="nl-popup-submit" onclick="handlePopupNewsletter(this)">Subscribe — It's Free</button>
+      <p class="nl-popup-note">No spam. Unsubscribe anytime. <a href="privacy">Privacy Policy</a>.</p>
+      <p class="nl-popup-dismiss" onclick="closeNlPopup()">No thanks, I'll skip this</p>
+    </div>
+    <div class="nl-popup-success" id="nlPopupSuccess">
+      <div class="nl-popup-success-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h4>You're subscribed!</h4>
+      <p>Welcome aboard. Your first newsletter will be in your inbox soon.</p>
+    </div>
+  </div>
+</div>
+
 <script src="main.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   HAMBURGER / MOBILE NAV
+═══════════════════════════════════════════════════════════ */
+(function () {
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  const closeBtn  = document.getElementById('mobileNavClose');
+
+  function openNav() {
+    mobileNav.classList.add('open');
+    hamburger.classList.add('active');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('nav-open');
+  }
+
+  function closeNav() {
+    mobileNav.classList.remove('open');
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('nav-open');
+  }
+
+  if (hamburger) hamburger.addEventListener('click', openNav);
+  if (closeBtn)  closeBtn.addEventListener('click', closeNav);
+
+  // Close on overlay click (tap outside nav panel)
+  document.addEventListener('click', function (e) {
+    if (
+      mobileNav.classList.contains('open') &&
+      !mobileNav.contains(e.target) &&
+      !hamburger.contains(e.target)
+    ) {
+      closeNav();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeNav();
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   STATS COUNTER ANIMATION
+═══════════════════════════════════════════════════════════ */
+(function () {
+  function animateCounter(el) {
+    const target = parseInt(el.getAttribute('data-target'), 10);
+    const suffix = el.getAttribute('data-suffix') || '';
+    const duration = 1800;
+    const start = performance.now();
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = Math.floor(easeOut(progress) * target);
+      el.textContent = value.toLocaleString() + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Use IntersectionObserver so counters fire when stats scroll into view
+  const statEls = document.querySelectorAll('.stat-number[data-target]');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    statEls.forEach(function (el) { observer.observe(el); });
+  } else {
+    // Fallback: just set the final values immediately
+    statEls.forEach(function (el) {
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      el.textContent = target.toLocaleString() + suffix;
+    });
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   NOTICE / CAVEAT MODAL  (auto-opens on page load)
+═══════════════════════════════════════════════════════════ */
+(function () {
+  var modal = document.getElementById('caveatModal');
+  if (!modal) return;
+
+  // Show immediately on load
+  window.addEventListener('DOMContentLoaded', function () {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Close on backdrop click
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+  });
+})();
+
+function closeModal() {
+  var modal = document.getElementById('caveatModal');
+  if (modal) {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    // Show newsletter popup after notice is dismissed (8 sec delay)
+    scheduleNlPopup(8000);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEWSLETTER POPUP
+═══════════════════════════════════════════════════════════ */
+var nlPopupTimer;
+
+function scheduleNlPopup(delay) {
+  // Don't show if already subscribed this session
+  if (sessionStorage.getItem('nlSubscribed')) return;
+  clearTimeout(nlPopupTimer);
+  nlPopupTimer = setTimeout(openNlPopup, delay);
+}
+
+function openNlPopup() {
+  var overlay = document.getElementById('nlPopupOverlay');
+  if (overlay) {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeNlPopup() {
+  var overlay = document.getElementById('nlPopupOverlay');
+  if (overlay) {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+document.getElementById('nlPopupClose').addEventListener('click', closeNlPopup);
+
+document.getElementById('nlPopupOverlay').addEventListener('click', function (e) {
+  if (e.target === this) closeNlPopup();
+});
+
+function handlePopupNewsletter(btn) {
+  var first = document.getElementById('nlp_firstname').value.trim();
+  var last  = document.getElementById('nlp_lastname').value.trim();
+  var email = document.getElementById('nlp_email').value.trim();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('nlp_email').style.borderColor = '#ef4444';
+    document.getElementById('nlp_email').focus();
+    return;
+  }
+
+  btn.textContent = 'Subscribing…';
+  btn.disabled = true;
+
+  // Simulate submission (replace with real API call)
+  setTimeout(function () {
+    document.getElementById('nlPopupFormWrap').style.display = 'none';
+    document.getElementById('nlPopupSuccess').style.display = 'block';
+    sessionStorage.setItem('nlSubscribed', '1');
+    // Auto-close after 3s
+    setTimeout(closeNlPopup, 3000);
+  }, 1200);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION NEWSLETTER FORM
+═══════════════════════════════════════════════════════════ */
+function handleSectionNewsletter(btn) {
+  var email = document.getElementById('nl_email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('nl_email').style.borderColor = '#ef4444';
+    document.getElementById('nl_email').focus();
+    return;
+  }
+  btn.textContent = 'Subscribing…';
+  btn.disabled = true;
+  setTimeout(function () {
+    document.getElementById('newsletterFormWrap').style.display = 'none';
+    document.getElementById('newsletterSuccess').style.display = 'flex';
+    sessionStorage.setItem('nlSubscribed', '1');
+  }, 1200);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER NEWSLETTER FORM
+═══════════════════════════════════════════════════════════ */
+function handleNewsletterSubmit(btn) {
+  var inputs = btn.closest('.footer-newsletter-form').querySelectorAll('input');
+  var email  = inputs[0].value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    inputs[0].style.borderColor = '#ef4444';
+    inputs[0].focus();
+    return;
+  }
+  btn.textContent = 'Done ✓';
+  btn.disabled = true;
+  sessionStorage.setItem('nlSubscribed', '1');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COOKIE BANNER
+═══════════════════════════════════════════════════════════ */
+(function () {
+  var banner = document.getElementById('cookieBanner');
+  if (!banner) return;
+  if (!localStorage.getItem('cookieChoice')) {
+    setTimeout(function () { banner.style.display = 'block'; }, 1500);
+  }
+})();
+
+function acceptCookies() {
+  localStorage.setItem('cookieChoice', 'accepted');
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+function rejectCookies() {
+  localStorage.setItem('cookieChoice', 'rejected');
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCROLL REVEAL (fallback if main.js doesn't handle it)
+═══════════════════════════════════════════════════════════ */
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var revealEls = document.querySelectorAll('.reveal');
+  if (!revealEls.length) return;
+
+  var revealObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(function (el) { revealObserver.observe(el); });
+})();
+</script>
+</body>
 </html>
