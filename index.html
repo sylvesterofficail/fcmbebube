@@ -1192,7 +1192,7 @@ body.nav-open { overflow: hidden; }
   </div>
 </div>
 
-<!-- CAVEAT / NOTICE MODAL (auto-shows on load) -->
+<!-- CAVEAT / NOTICE MODAL (auto-shows after 5 seconds) -->
 <div class="modal-overlay" id="caveatModal" role="dialog" aria-modal="true" aria-label="Important Notice">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
@@ -1208,7 +1208,7 @@ body.nav-open { overflow: hidden; }
   </div>
 </div>
 
-<!-- NEWSLETTER POPUP (shows after 8 seconds) -->
+<!-- NEWSLETTER POPUP (shows immediately on page load) -->
 <div class="nl-popup-overlay" id="nlPopupOverlay" role="dialog" aria-modal="true" aria-label="Newsletter Signup">
   <div class="nl-popup">
     <div class="nl-popup-top">
@@ -1339,16 +1339,17 @@ body.nav-open { overflow: hidden; }
 })();
 
 /* ═══════════════════════════════════════════════════════════
-   NOTICE / CAVEAT MODAL  (auto-opens on page load)
+   NOTICE / CAVEAT MODAL  (auto-opens after 5 seconds)
 ═══════════════════════════════════════════════════════════ */
 (function () {
   var modal = document.getElementById('caveatModal');
   if (!modal) return;
 
-  // Show immediately on load
   window.addEventListener('DOMContentLoaded', function () {
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    setTimeout(function () {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }, 5000);
   });
 
   // Close on backdrop click
@@ -1367,22 +1368,17 @@ function closeModal() {
   if (modal) {
     modal.classList.remove('open');
     document.body.style.overflow = '';
-    // Show newsletter popup after notice is dismissed (8 sec delay)
-    scheduleNlPopup(8000);
   }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   NEWSLETTER POPUP
+   NEWSLETTER POPUP (shows immediately on page load)
 ═══════════════════════════════════════════════════════════ */
-var nlPopupTimer;
-
-function scheduleNlPopup(delay) {
-  // Don't show if already subscribed this session
-  if (sessionStorage.getItem('nlSubscribed')) return;
-  clearTimeout(nlPopupTimer);
-  nlPopupTimer = setTimeout(openNlPopup, delay);
-}
+window.addEventListener('DOMContentLoaded', function () {
+  if (!sessionStorage.getItem('nlSubscribed')) {
+    openNlPopup();
+  }
+});
 
 function openNlPopup() {
   var overlay = document.getElementById('nlPopupOverlay');
