@@ -676,6 +676,28 @@ ul { list-style: none; }
 .stat-number .stat-suffix { font-size: 1.6rem; color: var(--gold); }
 .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
 
+/* Force stats into one line on small screens */
+@media (max-width: 768px) {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 equal columns */
+    gap: 8px; /* tighter spacing */
+  }
+
+  .stat-item {
+    padding: 12px 8px; /* reduce padding */
+    border-right: none; /* cleaner look */
+  }
+
+  .stat-number {
+    font-size: 1.4rem; /* shrink numbers */
+  }
+
+  .stat-label {
+    font-size: 0.7rem; /* shrink labels */
+  }
+}
+
 /* =============================================
    SERVICES
    ============================================= */
